@@ -1,0 +1,7 @@
+.vscode/**
+test/**
+samples/**
+.gitignore
+.editorconfig
+*.vsix
+**/*.map

@@ -1,0 +1,116 @@
+{
+  "name": "terminal-reader",
+  "displayName": "终端阅读器",
+  "description": "在 VS Code 终端面板里分页阅读本地 txt / Markdown 文档，支持目录、搜索与阅读进度记忆。",
+  "version": "0.1.1",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "reader",
+    "terminal",
+    "markdown",
+    "txt",
+    "novel",
+    "阅读"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:terminalReader.openActive",
+    "onCommand:terminalReader.openFile",
+    "onCommand:terminalReader.openPath",
+    "onCommand:terminalReader.openRecent",
+    "onCommand:terminalReader.clearProgress"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "terminalReader.openActive",
+        "title": "在终端中阅读当前文件",
+        "category": "终端阅读器",
+        "icon": "$(book)"
+      },
+      {
+        "command": "terminalReader.openFile",
+        "title": "打开文件并阅读…",
+        "category": "终端阅读器",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "terminalReader.openPath",
+        "title": "在终端中阅读",
+        "category": "终端阅读器"
+      },
+      {
+        "command": "terminalReader.openRecent",
+        "title": "打开最近阅读",
+        "category": "终端阅读器",
+        "icon": "$(history)"
+      },
+      {
+        "command": "terminalReader.clearProgress",
+        "title": "清除全部阅读进度",
+        "category": "终端阅读器"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "terminalReader.openActive",
+          "when": "resourceExtname == .txt || resourceExtname == .md || resourceExtname == .markdown || resourceExtname == .mdown || resourceExtname == .log",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "terminalReader.openPath",
+          "when": "!explorerResourceIsFolder && (resourceExtname == .txt || resourceExtname == .md || resourceExtname == .markdown || resourceExtname == .mdown || resourceExtname == .log)",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "terminalReader.openPath",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "终端阅读器",
+      "properties": {
+        "terminalReader.maxFileSizeMB": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 200,
+          "description": "允许打开的最大文件大小（MB）。"
+        },
+        "terminalReader.chapterPattern": {
+          "type": "string",
+          "default": "^\\s*(?:第\\s*[0-9零一二三四五六七八九十百千万两〇]+\\s*[章节回卷篇部集]|(?:Chapter|CHAPTER)\\s+[0-9IVXLCDM]+|序章|楔子|前言|后记|尾声|终章|番外)",
+          "description": "识别 txt 章节标题的正则表达式（Markdown 使用 # 标题）。"
+        },
+        "terminalReader.preservePosition": {
+          "type": "boolean",
+          "default": true,
+          "description": "关闭阅读器后记住每个文件的阅读位置。"
+        },
+        "terminalReader.mouseWheel": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用鼠标滚轮滚动（每格滚动 3 行）。启用后如需选中复制文字，请按住 Alt 拖动。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check extension.js && node --check src/reader.js && node --check src/document.js && node --check src/ansi.js && node --check src/keys.js",
+    "package": "npx --yes @vscode/vsce package --no-dependencies --allow-missing-repository"
+  }
+}
