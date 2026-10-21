@@ -177,6 +177,23 @@ test('mouse wheel scrolls content, toc and help', () => {
   assert.equal(session.mode, 'normal');
 });
 
+test('clicking a toc row jumps to that chapter', () => {
+  const { session } = createSession();
+  session.open({ columns: 50, rows: 10 });
+
+  session.handleInput('t');
+  assert.equal(session.mode, 'toc');
+  session.handleInput('\x1b[<0;10;4M');
+  assert.equal(session.mode, 'normal');
+  assert.equal(session.currentPosition().line, session.doc.chapters[1].line);
+
+  session.handleInput('t');
+  session.handleInput('\x1b[<0;10;1M'); // header row does nothing
+  assert.equal(session.mode, 'toc');
+  session.handleInput('\x1b[<0;10;3M');
+  assert.equal(session.currentPosition().line, session.doc.chapters[0].line);
+});
+
 test('every rendered row fills the terminal width exactly', () => {
   const { session, writes } = createSession();
   session.open({ columns: 50, rows: 12 });

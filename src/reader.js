@@ -43,7 +43,7 @@ const HELP_LINES = [
   ['  提示：阅读位置会自动保存；调整窗口大小后排版会重新计算。', 'code'],
 ];
 
-const TOC_HELP = '↑/↓ 选择 · Enter 跳转 · Esc 返回';
+const TOC_HELP = '↑/↓ 选择 · Enter / 鼠标点击跳转 · Esc 返回';
 
 class ReaderSession {
   constructor(options) {
@@ -298,7 +298,38 @@ class ReaderSession {
       const chapter = this.doc.chapters[this.tocIndex];
       this.mode = 'normal';
       if (chapter) this.jumpToLine(chapter.line);
+      return;
     }
+    if (name === 'click') {
+      const index = this.tocIndexForRow(key.row);
+      if (index === null) return;
+      this.tocIndex = index;
+      this.mode = 'normal';
+      this.jumpToLine(this.doc.chapters[index].line);
+    }
+  }
+
+  tocVisibleRows() {
+    return Math.max(1, this.bodyRows() - 2);
+  }
+
+  tocStart() {
+    const count = this.doc.chapters.length;
+    const visibleRows = this.tocVisibleRows();
+    let start = this.tocTop;
+    if (this.tocIndex < start) start = this.tocIndex;
+    if (this.tocIndex >= start + visibleRows) start = this.tocIndex - visibleRows + 1;
+    return Math.max(0, Math.min(start, Math.max(0, count - visibleRows)));
+  }
+
+  // Terminal coordinates are 1-based; rows 1-2 are the TOC header.
+  tocIndexForRow(row) {
+    const offset = Number(row) - 3;
+    if (!Number.isFinite(offset) || offset < 0) return null;
+    const visibleRows = this.tocVisibleRows();
+    if (offset >= visibleRows) return null;
+    const index = this.tocStart() + offset;
+    return index >= 0 && index < this.doc.chapters.length ? index : null;
   }
 
   handleHelpKey(key) {
@@ -596,12 +627,8 @@ class ReaderSession {
     lines.push(styleLine(` 目录 · 共 ${chapters.length} 章`, STYLES.h1, columns));
     lines.push(' '.repeat(columns));
 
-    const visibleRows = Math.max(1, rows - 2);
-    let start = this.tocTop;
-
-    if (this.tocIndex < start) start = this.tocIndex;
-    if (this.tocIndex >= start + visibleRows) start = this.tocIndex - visibleRows + 1;
-    start = Math.max(0, Math.min(start, Math.max(0, chapters.length - visibleRows)));
+    const visibleRows = this.tocVisibleRows();
+    const start = this.tocStart();
     this.tocTop = start;
 
     for (let row = 0; row < visibleRows; row += 1) {

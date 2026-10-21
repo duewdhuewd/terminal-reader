@@ -30,10 +30,14 @@ test('parses SGR and X10 mouse wheel events', () => {
   assert.deepEqual(parseKeys('\x1b[<64;10;5M'), [{ name: 'wheelup' }]);
   assert.deepEqual(parseKeys('\x1b[<65;10;5M'), [{ name: 'wheeldown' }]);
   assert.deepEqual(parseKeys('\x1b[<68;10;5M'), [{ name: 'wheelup' }]);
-  assert.deepEqual(parseKeys('\x1b[<0;10;5M'), []);
+  assert.deepEqual(parseKeys('\x1b[<0;10;5M'), [{ name: 'click', column: 10, row: 5 }]);
+  assert.deepEqual(parseKeys('\x1b[<0;10;5m'), []);
 
   const x10WheelUp = '\x1b[M' + String.fromCharCode(96, 33, 33);
   assert.deepEqual(parseKeys(x10WheelUp), [{ name: 'wheelup' }]);
+
+  const x10Click = '\x1b[M' + String.fromCharCode(32, 42, 37);
+  assert.deepEqual(parseKeys(x10Click), [{ name: 'click', column: 10, row: 5 }]);
 });
 
 test('parses mixed input in order', () => {

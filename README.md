@@ -19,7 +19,7 @@
 - 自动识别 txt 章节（`第X章`、`Chapter 1`、`序章`、`番外` 等），Markdown 使用 `#` 标题生成目录。
 - Markdown 渲染：标题、列表、引用、代码块、表格、链接与内联样式会转换为适合终端阅读的纯文本。
 - 目录跳转、全文搜索（高亮 + 上一个/下一个）、指定页跳转。
-- 支持鼠标滚轮滚动（正文、目录、帮助页）。
+- 支持鼠标滚轮滚动（正文、目录、帮助页），目录中可直接用鼠标点击章节跳转。
 - 自动记住每个文件的阅读位置，支持“最近阅读”。
 - 自动识别 UTF-8 / UTF-8 BOM / UTF-16 / GB18030（GBK）编码。
 - 中文宽字符、Emoji 按终端显示宽度排版，避免折行错位。
@@ -39,7 +39,7 @@ npm test
 
 ```bash
 npx @vscode/vsce package
-code --install-extension terminal-reader-0.1.1.vsix
+code --install-extension terminal-reader-0.1.2.vsix
 ```
 
 ## 使用
@@ -74,11 +74,12 @@ code --install-extension terminal-reader-0.1.1.vsix
 | `r` | 重新加载文件 |
 | `?` | 显示 / 关闭帮助 |
 | 鼠标滚轮 | 向上 / 向下滚动 3 行 |
+| 鼠标点击目录条目 | 跳转到该章节 |
 | `q` / `Ctrl+C` | 退出阅读器 |
 
 启用鼠标滚轮后，终端会捕获鼠标事件。此时如果想选中并复制文字，请**按住 `Alt` 拖动**（macOS 为 `Option`）。也可以在设置中关闭 `terminalReader.mouseWheel`，恢复普通终端的选择行为。
 
-目录中可用 `↑` / `↓` / `PageUp` / `PageDown` 选择，`Enter` 跳转，`Esc` 返回。帮助页较长时可用 `j` / `k` 滚动。
+目录中可用 `↑` / `↓` / `PageUp` / `PageDown` 选择，`Enter` 跳转，也可以直接用鼠标点击章节；`Esc` 返回。帮助页较长时可用 `j` / `k` 滚动。
 
 ## 设置
 

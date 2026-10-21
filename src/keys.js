@@ -51,9 +51,13 @@ function parseKeys(input) {
       const sgrMouse = /^\x1b\[<(\d+);(\d+);(\d+)([Mm])/.exec(rest);
       if (sgrMouse) {
         const code = Number(sgrMouse[1]);
+        const column = Number(sgrMouse[2]);
+        const row = Number(sgrMouse[3]);
+        const pressed = sgrMouse[4] === 'M';
         const button = code & ~(4 | 8 | 16);
         if (button === 64) keys.push({ name: 'wheelup' });
         else if (button === 65) keys.push({ name: 'wheeldown' });
+        else if (button === 0 && pressed) keys.push({ name: 'click', column, row });
         index += sgrMouse[0].length;
         continue;
       }
@@ -62,8 +66,11 @@ function parseKeys(input) {
       const x10Mouse = /^\x1b\[M([\s\S]{3})/.exec(rest);
       if (x10Mouse) {
         const button = x10Mouse[1].charCodeAt(0) - 32;
+        const column = x10Mouse[1].charCodeAt(1) - 32;
+        const row = x10Mouse[1].charCodeAt(2) - 32;
         if (button === 64) keys.push({ name: 'wheelup' });
         else if (button === 65) keys.push({ name: 'wheeldown' });
+        else if (button === 0) keys.push({ name: 'click', column, row });
         index += x10Mouse[0].length;
         continue;
       }

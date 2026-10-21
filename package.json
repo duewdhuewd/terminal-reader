@@ -2,7 +2,7 @@
   "name": "terminal-reader",
   "displayName": "终端阅读器",
   "description": "在 VS Code 终端面板里分页阅读本地 txt / Markdown 文档，支持目录、搜索与阅读进度记忆。",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "local",
   "license": "MIT",
   "icon": "assets/icon.png",
@@ -104,7 +104,7 @@
         "terminalReader.mouseWheel": {
           "type": "boolean",
           "default": true,
-          "description": "启用鼠标滚轮滚动（每格滚动 3 行）。启用后如需选中复制文字，请按住 Alt 拖动。"
+          "description": "启用鼠标滚轮滚动（每格滚动 3 行）和目录点击跳转。启用后如需选中复制文字，请按住 Alt 拖动。"
         }
       }
     }
